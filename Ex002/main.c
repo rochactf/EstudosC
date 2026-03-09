@@ -85,5 +85,5 @@ int multiplicacao(int a, int b)
 
 int divisao(int a, int b)
 {
-    return a / b;
+    return a/b;
 }

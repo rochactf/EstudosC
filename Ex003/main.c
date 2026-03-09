@@ -26,7 +26,7 @@ int main()
 
 float peso1(float v1)
 {
-    return v1 + (v1 * 0.15);
+    return v1 + (v1*0.15);
 }
 
 float peso2(float v1)
