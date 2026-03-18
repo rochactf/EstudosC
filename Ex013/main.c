@@ -1,70 +1,86 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-typedef struct {
+typedef struct
+{
     char nome[51];
     int matricula;
     float notas[3];
     float media;
 } Estudante;
 
-void lerEstudante(Estudante *e){
-    scanf(" %[^\n]", e->nome);
-    scanf("%d", &e->matricula);
-    scanf("%f %f %f", &e->notas[0], &e->notas[1], &e->notas[2]);
+float calcularMedia(Estudante e);
+void lerEstudante(Estudante *e);
+void lerEstudantes(Estudante *v, int n);
+void mostrarEstudante(int pos, Estudante e);
+void mostrarEstudantes(Estudante *v, int n);
+
+int main()
+{
+    int n;
+    scanf("%d", &n);
+    getchar();
+
+    Estudante *v = malloc(n * sizeof(Estudante));
+
+    lerEstudantes(v, n);
+    mostrarEstudantes(v, n);
+
+    free(v);
+    return 0;
 }
 
-void lerVarios(Estudante v[], int n){
-    for(int i=0;i<n;i++){
+float calcularMedia(Estudante e)
+{
+    return (e.notas[0] + e.notas[1] + e.notas[2]) / 3.0f;
+}
+
+void lerEstudante(Estudante *e)
+{
+    char linha[100];
+    do
+    {
+        fgets(linha, sizeof(linha), stdin);
+    } while (linha[0] == '\n' || linha[0] == '\r');
+
+    int len = strlen(linha);
+    if (linha[len - 1] == '\n')
+        linha[len - 1] = '\0';
+
+    char *p = strrchr(linha, ' ');
+    sscanf(p + 1, "%f", &e->notas[2]);
+    *p = '\0';
+
+    p = strrchr(linha, ' ');
+    sscanf(p + 1, "%f", &e->notas[1]);
+    *p = '\0';
+
+    p = strrchr(linha, ' ');
+    sscanf(p + 1, "%f", &e->notas[0]);
+    *p = '\0';
+
+    p = strrchr(linha, ' ');
+    sscanf(p + 1, "%d", &e->matricula);
+    *p = '\0';
+
+    strcpy(e->nome, linha);
+    e->media = calcularMedia(*e);
+}
+
+void lerEstudantes(Estudante *v, int n)
+{
+    for (int i = 0; i < n; i++)
         lerEstudante(&v[i]);
-    }
 }
 
-float calcularMedia(Estudante *e){
-    e->media = (e->notas[0] + e->notas[1] + e->notas[2]) / 3.0;
-    return e->media;
-}
-
-void calcularMedias(Estudante v[], int n){
-    for(int i=0;i<n;i++){
-        calcularMedia(&v[i]);
-    }
-}
-
-void ordenar(Estudante v[], int n){
-    Estudante temp;
-    for(int i=0;i<n-1;i++){
-        for(int j=i+1;j<n;j++){
-            if(v[j].media > v[i].media){
-                temp = v[i];
-                v[i] = v[j];
-                v[j] = temp;
-            }
-        }
-    }
-}
-
-void mostrarEstudante(Estudante e, int pos){
+void mostrarEstudante(int pos, Estudante e)
+{
     printf("%d. %s (%d): %.2f\n", pos, e.nome, e.matricula, e.media);
 }
 
-void mostrarTodos(Estudante v[], int n){
-    for(int i=0;i<n;i++){
-        mostrarEstudante(v[i], i+1);
-    }
-}
-
-int main(){
-
-    int N;
-    scanf("%d",&N);
-
-    Estudante alunos[1000];
-
-    lerVarios(alunos, N);
-    calcularMedias(alunos, N);
-    ordenar(alunos, N);
-    mostrarTodos(alunos, N);
-
-    return 0;
+void mostrarEstudantes(Estudante *v, int n)
+{
+    for (int i = 0; i < n; i++)
+        mostrarEstudante(i + 1, v[i]);
 }
